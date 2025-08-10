@@ -138,3 +138,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# i/o files
+input/
+output/
+
+# .pth
+gfpgan/weights/*.pth
+weights/*.pth
+
+# IDE
+.vscode/
+.idea/
