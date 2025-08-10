@@ -150,3 +150,6 @@ weights/*.pth
 # IDE
 .vscode/
 .idea/
+
+#claude
+.claude/settings.local.json
