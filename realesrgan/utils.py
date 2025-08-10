@@ -1,3 +1,65 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+Real-ESRGAN 유틸리티 모듈 (Real-ESRGAN Utilities Module)
+=========================================================
+
+이 모듈은 Real-ESRGAN의 핵심 유틸리티 클래스와 함수들을 제공합니다.
+특히 RealESRGANer 클래스는 사전 훈련된 모델을 사용하여 
+이미지 초해상도를 수행하는 메인 인터페이스 역할을 합니다.
+
+주요 클래스 (Main Classes):
+---------------------------
+1. RealESRGANer: 메인 초해상도 처리 클래스
+   - 사전 훈련된 모델 로딩 및 관리
+   - 타일 기반 대용량 이미지 처리
+   - 알파 채널 및 다양한 이미지 포맷 지원
+   - GPU/CPU 자동 선택 및 최적화
+
+2. PrefetchReader: 이미지 프리로딩 클래스
+   - 멀티스레딩 기반 이미지 사전 로딩
+   - 메모리 효율적인 배치 처리 지원
+
+3. IOConsumer: 이미지 저장 워커 클래스
+   - 비동기 이미지 저장 처리
+   - 멀티스레딩 기반 I/O 최적화
+
+주요 기능 (Key Features):
+-------------------------
+- 실시간 이미지 초해상도 처리
+- 대용량 이미지의 타일 기반 처리
+- 메모리 효율적인 배치 처리
+- 다양한 이미지 포맷 지원 (RGB, RGBA, 그레이스케일)
+- 16비트 이미지 지원
+- Deep Network Interpolation (DNI) 지원
+- 자동 모델 다운로드 기능
+
+성능 최적화 (Performance Optimization):
+--------------------------------------
+- CUDA 지원으로 GPU 가속 처리
+- Half Precision (FP16) 지원으로 메모리 사용량 감소
+- 타일 기반 처리로 메모리 제한 극복
+- 멀티스레딩 기반 I/O 처리
+- 효율적인 전처리 및 후처리 파이프라인
+
+기술적 세부사항 (Technical Details):
+-----------------------------------
+- OpenCV를 사용한 이미지 I/O 및 전처리
+- PyTorch 기반 딥러닝 추론
+- Reflection Padding을 통한 경계 아티팩트 제거
+- Lanczos4 리샘플링을 통한 출력 스케일 조정
+- 자동 배치 크기 조정 및 메모리 관리
+
+의존성 (Dependencies):
+----------------------
+- OpenCV (cv2): 이미지 처리 및 I/O
+- NumPy: 수치 연산 및 배열 처리  
+- PyTorch: 딥러닝 추론 엔진
+- BasicSR: 파일 다운로드 유틸리티
+- threading/queue: 멀티스레딩 지원
+"""
+
 import cv2
 import math
 import numpy as np

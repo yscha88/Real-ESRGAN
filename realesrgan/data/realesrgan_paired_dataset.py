@@ -1,3 +1,62 @@
+"""
+Real-ESRGAN 페어드 데이터셋 (Real-ESRGAN Paired Dataset)
+======================================================
+
+이 파일은 Real-ESRGAN 모델의 학습과 평가를 위한 페어드(paired) 데이터셋을 구현합니다.
+GT (Ground Truth) 고화질 이미지와 LQ (Low Quality) 저화질 이미지 쌍을 로드하여
+supervised learning 방식의 이미지 복원 학습을 지원합니다.
+
+주요 특징 (Key Features):
+------------------------
+1. 다중 데이터 백엔드 지원 (Multi-backend Data Loading)
+   - LMDB: 대용량 데이터셋을 위한 고성능 키-값 데이터베이스
+   - Meta Info: 메타 정보 파일 기반 경로 관리
+   - Folder: 폴더 스캐닝을 통한 자동 파일 쌍 매칭
+
+2. 고급 데이터 증강 파이프라인 (Advanced Data Augmentation)
+   - Paired Random Crop: GT-LQ 쌍에 동일한 위치 크롭 적용
+   - 수평 플립과 회전 변환으로 데이터 다양성 증대
+   - 스케일링 팩터를 고려한 정확한 공간적 대응 관계 유지
+
+3. 정규화 및 전처리 (Normalization & Preprocessing)
+   - 사용자 정의 mean/std 정규화 지원
+   - BGR to RGB 색상 공간 변환
+   - float32 형식과 [0,1] 범위 정규화
+
+4. 유연한 파일 경로 관리 (Flexible File Path Management)
+   - 파일명 템플릿을 통한 유연한 파일 매칭
+   - 상대/절대 경로 지원
+   - 메타 정보 파일을 통한 커스텀 파일 쌍 정의
+
+데이터 로딩 모드 (Data Loading Modes):
+-----------------------------------
+1. LMDB 모드: 
+   - 고성능 키-값 저장소 활용
+   - 대용량 데이터셋에 최적화
+   - 빠른 랜덤 액세스 보장
+
+2. Meta Info 모드:
+   - 텍스트 파일 기반 경로 관리
+   - 커스텀 데이터셋 구성에 유용
+   - GT-LQ 파일 쌍 명시적 정의
+
+3. Folder 모드:
+   - 폴더 구조 기반 자동 매칭
+   - 간단한 데이터셋 구성에 적합
+   - 파일명 기반 자동 쌍 매칭
+
+성능 최적화 (Performance Optimizations):
+-------------------------------------
+- 지연 초기화를 통한 메모리 효율성
+- 파일 클라이언트 재사용으로 I/O 오버헤드 최소화
+- 텐서 변환 최적화로 GPU 메모리 사용량 최적화
+- 정규화 인플레이스 연산으로 메모리 사용량 절약
+
+작성자: Real-ESRGAN Team
+용도: 이미지 복원, Super-resolution, Denoising
+라이센스: Apache License 2.0
+"""
+
 import os
 from basicsr.data.data_util import paired_paths_from_folder, paired_paths_from_lmdb
 from basicsr.data.transforms import augment, paired_random_crop

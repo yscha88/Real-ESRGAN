@@ -1,3 +1,45 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Real-ESRGAN 추론(Inference) 스크립트
+
+이 파일은 Real-ESRGAN을 사용하여 이미지 초해상도(Super-Resolution)를 수행하는 메인 추론 스크립트입니다.
+
+주요 기능:
+- 6가지 사전 훈련된 Real-ESRGAN 모델 지원
+- 단일 이미지 또는 폴더 내 모든 이미지 처리
+- 자동 모델 가중치 다운로드
+- GFPGAN을 이용한 얼굴 향상 기능
+- GPU 메모리 부족 시 타일 처리 지원
+- RGBA 이미지 투명도 채널 처리
+- 다양한 출력 형식 지원 (jpg, png, 자동)
+
+지원 모델:
+1. RealESRGAN_x4plus: 일반 이미지 4배 업스케일 (RRDBNet, 23블록)
+2. RealESRNet_x4plus: GAN 없는 4배 업스케일 (RRDBNet, 23블록)
+3. RealESRGAN_x4plus_anime_6B: 애니메이션 4배 업스케일 (RRDBNet, 6블록)
+4. RealESRGAN_x2plus: 일반 이미지 2배 업스케일 (RRDBNet, 23블록)
+5. realesr-animevideov3: 애니메이션 비디오 4배 업스케일 (SRVGGNet, 16conv)
+6. realesr-general-x4v3: 일반 이미지 v3 4배 업스케일 (SRVGGNet, 32conv)
+
+주요 파라미터:
+-i, --input: 입력 이미지/폴더 경로
+-n, --model_name: 사용할 모델 이름
+-o, --output: 출력 폴더 경로
+-s, --outscale: 최종 업스케일링 배율
+-t, --tile: 타일 크기 (GPU 메모리 절약용)
+--face_enhance: GFPGAN 얼굴 향상 사용
+--fp32: FP32 정밀도 사용 (기본: FP16)
+--denoise_strength: 노이즈 제거 강도 (v3 모델 전용)
+
+사용 예시:
+python inference_realesrgan.py -n RealESRGAN_x4plus -i inputs -o results
+python inference_realesrgan.py -n realesr-general-x4v3 -i image.jpg -s 4 --face_enhance
+python inference_realesrgan.py -n RealESRGAN_x4plus_anime_6B -i anime_folder -t 400
+
+개발: Xintao Wang, Tencent ARC Lab
+"""
+
 import argparse
 import cv2
 import glob
@@ -54,7 +96,7 @@ def main():
 
     args = parser.parse_args()
 
-    # determine models according to model names
+    # determine models according to model names2
     args.model_name = args.model_name.split('.')[0]
     if args.model_name == 'RealESRGAN_x4plus':  # x4 RRDBNet model
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)

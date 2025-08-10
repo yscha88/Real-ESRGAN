@@ -1,3 +1,35 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Real-ESRGAN Cog 예측(Prediction) 모듈
+
+이 파일은 Replicate.com 플랫폼에서 Real-ESRGAN 모델을 배포하기 위한 Cog 인터페이스입니다.
+
+주요 기능:
+- 4가지 Real-ESRGAN 모델 버전 지원 (General, Anime, AnimeVideo)
+- 자동 모델 가중치 다운로드
+- GFPGAN을 이용한 얼굴 향상 기능
+- GPU 메모리 부족 시 타일 처리 지원
+- RGBA 이미지 처리 지원
+
+지원 모델:
+1. General - RealESRGANplus: 일반 이미지용 RRDBNet 기반 (64 feature, 23 blocks)
+2. General - v3: 일반 이미지용 SRVGGNetCompact 기반 (32 convs)
+3. Anime - anime6B: 애니메이션용 RRDBNet 기반 (64 feature, 6 blocks)
+4. AnimeVideo - v3: 애니메이션 비디오용 SRVGGNetCompact 기반 (16 convs)
+
+입력 파라미터:
+- img: 입력 이미지 경로
+- version: 모델 버전 선택
+- scale: 업스케일링 배율 (기본 2배)
+- face_enhance: GFPGAN 얼굴 향상 사용 여부
+- tile: 타일 크기 (GPU 메모리 부족 시 설정)
+
+사용 예시:
+cog predict -i img=@inputs/00017_gray.png -i version='General - v3' -i scale=2 -i face_enhance=True -i tile=0
+cog push r8.im/xinntao/realesrgan
+"""
+
 # flake8: noqa
 # This file is used for deploying replicate models
 # running: cog predict -i img=@inputs/00017_gray.png -i version='General - v3' -i scale=2 -i face_enhance=True -i tile=0

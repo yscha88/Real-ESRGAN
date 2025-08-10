@@ -1,3 +1,58 @@
+"""
+Real-ESRNet 모델 구현 (RealESRNetModel)
+
+이 모듈은 Real-ESRGAN의 전처리 단계로 사용되는 MSE 기반 초해상도 모델을 구현합니다.
+GAN 손실 없이 순수하게 픽셀 기반 손실 함수만을 사용하여 훈련됩니다.
+
+핵심 특징:
+1. MSE 기반 훈련 (MSE-based Training)
+   - GAN 손실 없이 L1/L2 픽셀 손실만 사용
+   - 안정적이고 예측 가능한 훈련 과정
+   - PSNR 최적화에 특화된 접근법
+
+2. 실세계 열화 시뮬레이션 (Real-world Degradation Simulation)  
+   - RealESRGANModel과 동일한 2차 열화 과정
+   - 블러, 노이즈, JPEG 압축, 다중 리사이징
+   - 실제 저화질 이미지 패턴 모방
+
+3. 전처리용 모델 (Preprocessing Model)
+   - RealESRGANModel 훈련의 초기화 가중치 제공
+   - 안정적인 기본 성능 확보
+   - GAN 훈련 전 네트워크 수렴을 위한 준비
+
+4. 단순화된 훈련 파이프라인
+   - Discriminator 없이 Generator만 훈련
+   - 복잡한 적대적 훈련 과정 생략
+   - 빠른 수렴과 안정성 확보
+
+손실 함수:
+- Pixel Loss (L1/L2): 기본적인 픽셀 단위 재구성 오차
+- Perceptual Loss (선택적): VGG 기반 지각적 손실
+- 주로 L1 손실에 의존하여 명확하고 선명한 결과 생성
+
+최적화 전략:
+- 단일 네트워크 최적화 (Generator only)
+- 표준 Adam/AdamW 옵티마이저 사용
+- 학습률 스케줄링을 통한 점진적 수렴
+
+사용 사례:
+- RealESRGAN 모델 훈련을 위한 사전 훈련 (Pre-training)
+- PSNR 기반 성능이 중요한 경우
+- 안정적인 초해상도가 필요한 응용
+- 빠른 훈련이 필요한 실험적 상황
+
+장점:
+- 훈련 안정성이 높음
+- 빠른 수렴 속도
+- 예측 가능한 결과
+- 구현과 디버깅이 용이
+
+단점:
+- 시각적 품질이 GAN 모델보다 떨어짐
+- 과도하게 부드러운(blurry) 결과 경향
+- 텍스처 복원 능력 제한
+"""
+
 import numpy as np
 import random
 import torch

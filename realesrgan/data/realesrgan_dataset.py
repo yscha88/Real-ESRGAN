@@ -1,3 +1,51 @@
+"""
+Real-ESRGAN 실시간 열화 데이터셋 (Real-ESRGAN Dynamic Degradation Dataset)
+========================================================================
+
+이 파일은 Real-ESRGAN 모델의 학습을 위한 실시간 열화(degradation) 데이터셋을 구현합니다.
+논문 "Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data"에서
+제안한 순수 합성 데이터를 활용한 blind super-resolution 학습 방법을 구현합니다.
+
+주요 특징 (Key Features):
+------------------------
+1. 실시간 열화 생성 (Real-time Degradation Generation)
+   - GPU에서 실시간으로 저화질 이미지를 생성하여 학습 속도 최적화
+   - 다양한 blur kernel과 noise 패턴을 통한 현실적인 열화 시뮬레이션
+
+2. 2단계 열화 파이프라인 (Two-stage Degradation Pipeline)
+   - 첫 번째 열화: blur + downsampling + noise
+   - 두 번째 열화: blur + downsampling + noise + JPEG compression
+   - 최종 sinc filter 적용으로 현실적인 artifacts 생성
+
+3. 동적 커널 생성 (Dynamic Kernel Generation)
+   - Gaussian, Generalized Gaussian, Plateau blur kernels
+   - Sinc filters와 circular lowpass kernels
+   - 확률적 커널 선택을 통한 데이터 다양성 증대
+
+4. 고급 데이터 증강 (Advanced Data Augmentation)
+   - 수평 플립, 회전 변환
+   - 동적 크롭/패딩 (400x400 고정 크기)
+   - BGR to RGB 색상 공간 변환
+
+성능 최적화 (Performance Optimizations):
+-------------------------------------
+- GPU 기반 실시간 열화로 I/O 오버헤드 최소화
+- 파일 읽기 오류 복구 메커니즘 (3회 재시도)
+- LMDB 백엔드 지원으로 대용량 데이터셋 효율적 처리
+- 텐서 기반 커널 연산으로 메모리 사용량 최적화
+
+기술적 구현 세부사항 (Technical Implementation Details):
+----------------------------------------------------
+- 커널 크기: 7x7 ~ 21x21 (동적 선택)
+- 이미지 크기: 400x400 픽셀 고정
+- 색상 형식: BGR -> RGB 변환
+- 데이터 형식: float32, [0,1] 범위
+
+작성자: Real-ESRGAN Team
+논문: https://arxiv.org/abs/2107.10833
+라이센스: Apache License 2.0
+"""
+
 import cv2
 import math
 import numpy as np

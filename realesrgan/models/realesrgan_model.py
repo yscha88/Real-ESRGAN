@@ -1,3 +1,45 @@
+"""
+Real-ESRGAN 모델 구현 (RealESRGANModel)
+
+이 모듈은 "Real-ESRGAN: Training Real-World Blind Super-Resolution with Pure Synthetic Data" 
+논문에서 제안된 완전한 GAN 기반 초해상도 모델을 구현합니다.
+
+핵심 특징:
+1. GAN 기반 훈련 (GAN-based Training)
+   - Generator와 Discriminator를 모두 사용하는 적대적 훈련
+   - 고품질의 시각적으로 만족스러운 결과 생성
+   - Perceptual loss와 adversarial loss 결합
+
+2. 실세계 열화 시뮬레이션 (Real-world Degradation Simulation)
+   - 2차 열화 과정 (Two-order degradation process)
+   - 동적 블러 커널, 노이즈, JPEG 압축, 리사이징
+   - GPU 텐서에서 직접 LQ 이미지 합성
+
+3. 훈련 쌍 풀 시스템 (Training Pair Pool System)
+   - 배치 내 열화 다양성 증대를 위한 큐 시스템
+   - 더 다양한 훈련 샘플 조합 생성
+
+4. USM 샤프닝 (Unsharp Mask Sharpening)
+   - GT 이미지의 선명도 향상
+   - 더 나은 세부사항 복원을 위한 전처리
+
+손실 함수:
+- Pixel Loss (L1/L2): 기본적인 픽셀 단위 손실
+- Perceptual Loss: VGG 기반 지각적 손실
+- Style Loss: 텍스처와 스타일 보존
+- Adversarial Loss: 실제와 구분되지 않는 결과 생성
+
+최적화 전략:
+- Alternating optimization: Generator와 Discriminator 교대 훈련
+- EMA (Exponential Moving Average): 안정적인 훈련을 위한 가중치 평균
+- 스케줄링된 훈련: D_init_iters와 D_iters를 통한 훈련 밸런스 조절
+
+사용 사례:
+- 실제 이미지의 초해상도
+- 오래된 사진 복원
+- 웹 이미지 품질 향상
+"""
+
 import numpy as np
 import random
 import torch
